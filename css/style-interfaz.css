@@ -54,6 +54,11 @@ body {
     color: white;
 }
 
+h2 {
+    text-align: center;
+    color: white !important;
+}
+
 .form-outline{
     padding: 1%;
     width: 86%;

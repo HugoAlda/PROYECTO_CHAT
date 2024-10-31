@@ -40,9 +40,14 @@ mysqli_begin_transaction($conexion, MYSQLI_TRANS_START_READ_WRITE);
 <body>
     <div class="contenedor">
         <div class="solicitud">
-            <nav class="navbar navbar-light justify-content-between">
+            <nav class="navbar">
                 <form action="" method="post">
                     <button type="submit" name="btn_amigos" class="navbar-brand btn-link">Amigos</button>
+                </form>
+                <form action="./destruir.php">
+                    <button type="submit" class="navbar-brand btn-link">Cerrar Session</button>
+                </form>
+                <form action="" method="post">
                     <input type="submit" name="btn_agregar" value="+" id="btn_agregar">
                 </form>  
             </nav>
@@ -87,6 +92,7 @@ mysqli_begin_transaction($conexion, MYSQLI_TRANS_START_READ_WRITE);
                         }
                     }
                 ?>
+                <br><br>
                 <h2>Solicitudes</h2>
                 <?php       
                     try {
