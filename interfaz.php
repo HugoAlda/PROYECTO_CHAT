@@ -1,26 +1,26 @@
 <?php
-require_once 'conexion.php';
-session_start();
-
-$nombre_usuario = $_SESSION['nombre_usuario']; 
-$id_usuario = "";
-try {
-    $sql = "SELECT id_usuario FROM tbl_usuarios WHERE nombre_usuario = ?";
-    $stmt = mysqli_stmt_init($conexion);
-    if (mysqli_stmt_prepare($stmt, $sql)) {
-        mysqli_stmt_bind_param($stmt, "s", $nombre_usuario); 
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        $usuario = mysqli_fetch_assoc($result);
-        $_SESSION['id_usuario'] = $usuario['id_usuario'];
+    require_once 'conexion.php';
+    session_start();
+    
+    $nombre_usuario = $_SESSION['nombre_usuario']; 
+    $id_usuario = "";
+    try {
+        $sql = "SELECT id_usuario FROM tbl_usuarios WHERE nombre_usuario = ?";
+        $stmt = mysqli_stmt_init($conexion);
+        if (mysqli_stmt_prepare($stmt, $sql)) {
+            mysqli_stmt_bind_param($stmt, "s", $nombre_usuario); 
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $usuario = mysqli_fetch_assoc($result);
+            $_SESSION['id_usuario'] = $usuario['id_usuario'];
+        }
+    } catch (Exception $e) {
+        echo "<br><h6>" . htmlspecialchars($e->getMessage()) . "</h6>";
+        exit;
     }
-} catch (Exception $e) {
-    echo "<br><h6>" . htmlspecialchars($e->getMessage()) . "</h6>";
-    exit;
-}
-
-mysqli_autocommit($conexion, false);
-mysqli_begin_transaction($conexion, MYSQLI_TRANS_START_READ_WRITE);
+    
+    mysqli_autocommit($conexion, false);
+    mysqli_begin_transaction($conexion, MYSQLI_TRANS_START_READ_WRITE);
 ?>
 
 <!DOCTYPE html>

@@ -42,6 +42,11 @@ CREATE TABLE tbl_solicitudes_amistad (
     fecha_solicitud TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Claves foráneas para la tabla tbl_mensajes
+
+ALTER TABLE tbl_mensajes
+ADD CONSTRAINT fk_id_conversacion FOREIGN KEY (id_conversacion) REFERENCES tbl_conversaciones(id_conversacion);
+
 -- Claves foráneas para la tabla tbl_amigos
 ALTER TABLE tbl_amigos
 ADD CONSTRAINT fk_amigos_usuarioa FOREIGN KEY (id_usuarioa) REFERENCES tbl_usuarios(id_usuario),
@@ -51,10 +56,6 @@ ADD CONSTRAINT fk_amigos_usuariob FOREIGN KEY (id_usuariob) REFERENCES tbl_usuar
 ALTER TABLE tbl_conversaciones
 ADD CONSTRAINT fk_conversacion_usuarioa FOREIGN KEY (id_usuarioa) REFERENCES tbl_usuarios(id_usuario),
 ADD CONSTRAINT fk_conversacion_usuariob FOREIGN KEY (id_usuariob) REFERENCES tbl_usuarios(id_usuario);
-
--- Claves foráneas para la tabla tbl_mensajes
-ALTER TABLE tbl_mensajes
-ADD CONSTRAINT fk_mensaje_conversacion FOREIGN KEY (id_conversacion) REFERENCES tbl_conversaciones(id_conversacion);
 
 -- Claves foráneas para la tabla tbl_solicitudes_amistad
 ALTER TABLE tbl_solicitudes_amistad
