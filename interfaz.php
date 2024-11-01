@@ -43,14 +43,13 @@
             <nav class="navbar">
                 <form action="" method="post">
                     <button type="submit" name="btn_amigos" class="navbar-brand btn-link">Amigos</button>
+                    <input type="submit" name="btn_agregar" value="+" id="btn_agregar">
                 </form>
                 <form action="./destruir.php">
                     <button type="submit" class="navbar-brand btn-link">Cerrar Session</button>
                 </form>
-                <form action="" method="post">
-                    <input type="submit" name="btn_agregar" value="+" id="btn_agregar">
-                </form>  
             </nav>
+            <?php if (isset($_POST['btn_agregar']) || isset($_POST['btn_busqueda_usuarios'])){?>
                 <div class="input-group">
                     <form action="" method="post" id="amigos-navbar">
                         <div class="input-group">
@@ -136,7 +135,7 @@
                         echo "<br><h6>" . htmlspecialchars($e->getMessage()) . "</h6>";
                     }
                 ?>
-            <?php if (isset($_POST['mostrar_busqueda_amigos']) && $_SESSION['mostrar_busqueda_amigos']) { ?>
+            <?php } else {?>
                 <div class="input-group">
                     <form action="" method="post" id="agregar-navbar">
                         <div class="input-group">
@@ -174,14 +173,23 @@
                 }
             } else {
                 try {
-                    $sql_lista_amigos = "SELECT u.id_usuario, u.nombre_usuario 
-                                        FROM tbl_amigos a 
-                                        INNER JOIN tbl_usuarios u ON a.id_amigo = u.id_usuario";
+                    $id_usuario = $_SESSION['id_usuario'];
+                    $sql_lista_amigos = "
+                        SELECT u.id_usuario, u.nombre_usuario
+                        FROM tbl_amigos a
+                        INNER JOIN tbl_usuarios u ON (
+                            (a.id_usuarioa = $id_usuario AND a.id_usuariob = u.id_usuario)
+                            OR (a.id_usuariob = $id_usuario AND a.id_usuarioa = u.id_usuario)
+                        )
+                        WHERE u.id_usuario != $id_usuario
+                    ";
+                    
                     $consulta_lista_amigos = mysqli_query($conexion, $sql_lista_amigos);
-                    $amigos = mysqli_fetch_all($consulta_lista_amigos, MYSQLI_ASSOC); 
+                    $amigos = mysqli_fetch_all($consulta_lista_amigos, MYSQLI_ASSOC);
                 } catch (Exception $e) {
                     echo "<br><h6>" . htmlspecialchars($e->getMessage()) . "</h6>";
                 }
+                
             }
 
             // Mostrar amigos encontrados (filtrados o todos)
@@ -209,71 +217,58 @@
             </div>
             <div class="mensajes">
             <?php
-                try {
-                    // Paso 1: Obtener `id_conversacion` entre el usuario actual y el amigo
-                    $sql_conversation = "SELECT id_conversacion 
-                                        FROM tbl_conversaciones 
-                                        WHERE (id_usuario_emisor = ? AND id_amigo_receptor = ?)
-                                        OR (id_usuario_emisor = ? AND id_amigo_receptor = ?)";
+            try {
+                mysqli_begin_transaction($conexion);
 
-                    $stmt_conv = mysqli_stmt_init($conexion);
-                    if (mysqli_stmt_prepare($stmt_conv, $sql_conversation)) {
-                        // Vincular parámetros
-                        mysqli_stmt_bind_param($stmt_conv, "iiii", $id_usuario, $id_amigo, $id_amigo, $id_usuario);
-                        mysqli_stmt_execute($stmt_conv);
+                // Paso 1: Obtener la conversación y los mensajes en una sola consulta
+                $sql_chat = "SELECT c.id_conversacion, m.mensaje, m.fecha_envio, u.nombre_usuario, u.id_usuario
+                            FROM tbl_conversaciones c
+                            INNER JOIN tbl_mensajes m ON c.id_conversacion = m.id_conversacion
+                            INNER JOIN tbl_usuarios u ON (u.id_usuario = c.id_usuarioa OR u.id_usuario = c.id_usuariob)
+                            WHERE (c.id_usuarioa = ? AND c.id_usuariob = ?)
+                                OR (c.id_usuarioa = ? AND c.id_usuariob = ?)
+                            ORDER BY m.fecha_envio";
 
-                        // Obtener el resultado
-                        $result_conv = mysqli_stmt_get_result($stmt_conv);
-                        $conversation = mysqli_fetch_assoc($result_conv);
+                $stmt_chat = mysqli_stmt_init($conexion);
+                if (mysqli_stmt_prepare($stmt_chat, $sql_chat)) {
+                    $id_usuario = $_SESSION['id_usuario'];
+                    $id_amigo = isset($_GET['id_amigo']) ? $_GET['id_amigo'] : "";
 
-                        // Verificar si la conversación existe
-                        if ($conversation) {
-                            $id_conversacion = $conversation['id_conversacion'];
-                            echo "<h1>ID de la Conversación: " . htmlspecialchars($id_conversacion) . "</h1>";
+                    // Vincular parámetros
+                    mysqli_stmt_bind_param($stmt_chat, "iiii", $id_usuario, $id_amigo, $id_amigo, $id_usuario);
+                    mysqli_stmt_execute($stmt_chat);
+                    $result_chat = mysqli_stmt_get_result($stmt_chat);
+                    $chat = mysqli_fetch_all($result_chat, MYSQLI_ASSOC);
 
-                            // Paso 2: Obtener los mensajes de la conversación
-                            $sql_messages = "SELECT m.mensaje, m.fecha_envio, u.nombre_usuario
-                                            FROM tbl_mensajes m
-                                            INNER JOIN tbl_mensajes_conversacion mc ON m.id_mensaje = mc.id_mensaje
-                                            INNER JOIN tbl_usuarios u ON mc.id_usuario = u.id_usuario
-                                            WHERE mc.id_conversacion = ?
-                                            ORDER BY m.fecha_envio";
-
-                            $stmt_msg = mysqli_stmt_init($conexion);
-                            if (mysqli_stmt_prepare($stmt_msg, $sql_messages)) {
-                                mysqli_stmt_bind_param($stmt_msg, "i", $id_conversacion);
-                                mysqli_stmt_execute($stmt_msg);
-                                $result_msg = mysqli_stmt_get_result($stmt_msg);
-                                $chat = mysqli_fetch_all($result_msg, MYSQLI_ASSOC);
-
-                                // Mostrar mensajes
-                                if (count($chat) > 0) {
-                                    echo "<div class='chat-container'>";
-                                    foreach ($chat as $mensaje) {
-                                        echo "<div class='mensaje'>";
-                                        echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
-                                        echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
-                                        echo "</div>";
-                                    }
-                                    echo "</div>";
-                                } else {
-                                    echo "<div id='vacio'><div>No hay mensajes en esta conversación.</div></div>";
-                                }
+                    // Mostrar mensajes intercalados
+                    if (count($chat) > 0) {
+                        echo "<div class='chat-container'>";
+                        foreach ($chat as $mensaje) {
+                            // Determina si el mensaje es del usuario actual
+                            if ($mensaje['id_usuario'] == $id_usuario) {
+                                // Mensaje del usuario logueado
+                                echo "<div class='mensaje'>";
+                                echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
+                                echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
+                                echo "</div>";
                             }
-                        } else {
-                            echo "<div id='vacio'><div>No hay conversación entre estos usuarios.</div></div>";
                         }
+                        echo "</div>";
+                    } else {
+                        echo "<div id='vacio'><div>No hay mensajes en esta conversación.</div></div>";
                     }
-
-                    // Confirmar la transacción
-                    mysqli_commit($conexion);
-
-                } catch (Exception $e) {
-                    // En caso de error, hacer rollback de la transacción
-                    mysqli_rollback($conexion);
-                    echo "<br><h6>Error: " . htmlspecialchars($e->getMessage()) . "</h6>";
+                } else {
+                    echo "<div id='vacio'><div>Error en la consulta de mensajes.</div></div>";
                 }
-                ?>
+                // Confirmar la transacción
+                mysqli_commit($conexion);
+            } catch (Exception $e) {
+                // En caso de error, hacer rollback de la transacción
+                mysqli_rollback($conexion);
+                echo "<br><h6>Error: " . htmlspecialchars($e->getMessage()) . "</h6>";
+            }
+
+            ?>
             </div>
             <div>
                 <form action="./inserts/insert_mensaje.php" method="post">

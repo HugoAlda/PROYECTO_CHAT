@@ -5,7 +5,7 @@ session_start();
     if (isset($_POST['btn_mensaje']) && isset($_POST['id_amigo'])) {
         $mensaje = htmlspecialchars($_POST['mensaje']);
         $id_amigo = $_POST['id_amigo'];
-        $id_usuario_actual = $_SESSION['id_usuar io'];
+        $id_usuario_actual = $_SESSION['id_usuario'];
         mysqli_autocommit($conexion, false); 
         try {
             // Consulta para verificar o crear una conversación
@@ -21,13 +21,6 @@ session_start();
             
             if ($conversacion) {
                 $id_conversacion = $conversacion['id_conversacion'];
-            } else {
-                // Insertar una nueva conversación si no existe
-                $sql_insert_conversacion = "INSERT INTO tbl_conversaciones (id_usuarioa, id_usuariob) VALUES (?, ?)";
-                $stmt_insert_conv = mysqli_prepare($conexion, $sql_insert_conversacion);
-                mysqli_stmt_bind_param($stmt_insert_conv, "ii", $id_usuario_actual, $id_amigo);
-                mysqli_stmt_execute($stmt_insert_conv);
-                $id_conversacion = mysqli_insert_id($conexion); 
             }
         
             // Insertar el mensaje en tbl_mensajes
@@ -38,8 +31,7 @@ session_start();
         
             // Confirmar la transacción
             mysqli_commit($conexion);
-            echo "Mensaje enviado correctamente.";
-            header("Location: interfaz.php?id_amigo=" . $id_amigo);
+            header("Location: ../interfaz.php?id_amigo=" . $id_amigo);
             exit();
         } catch (Exception $e) {
             mysqli_rollback($conexion);

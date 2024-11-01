@@ -25,7 +25,7 @@ session_start();
                 }
                 mysqli_stmt_close($stmt);
                 mysqli_commit($conexion);
-                header("Location: index.php");
+                header("Location: ../index.php");
                 exit();
             } catch (Exception $e) {
                 mysqli_rollback($conexion);
