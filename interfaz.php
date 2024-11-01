@@ -210,7 +210,7 @@
             <div>
                 <div class="header">
                     <h1><?php echo $_SESSION['nombre_usuario']; ?></h1>
-                    <form action="insert.php" method="POST">
+                    <form action="./inserts/insert_vaciar_conversacion.php" method="POST">
                         <input type="submit" class="btn-del" name="btn_vaciar_conversacion" value="Vaciar Conversación">
                     </form>
                 </div>

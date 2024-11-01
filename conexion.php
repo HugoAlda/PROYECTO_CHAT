@@ -5,7 +5,7 @@
     // Contraseña Roberto
     // $dbpasswordB="qazQAZ123";
     // Contraseña Hugo
-    $dbpasswordH="qazQAZ123";
+    $dbpasswordH="30891b92";
     $dbbasedatos="bd_chat";
     
     try {
