@@ -41,13 +41,15 @@
     <div class="contenedor">
         <div class="solicitud">
             <nav class="navbar">
-                <form action="" method="post">
-                    <button type="submit" name="btn_amigos" class="navbar-brand btn-link">Amigos</button>
-                    <input type="submit" name="btn_agregar" value="+" id="btn_agregar">
-                </form>
-                <form action="./destruir.php">
-                    <button type="submit" class="navbar-brand btn-link">Cerrar Session</button>
-                </form>
+                <div class="navbar-div">
+                    <form action="" method="post">
+                        <button type="submit" name="btn_amigos" class="navbar-brand btn-link">Amigos</button>
+                        <input type="submit" name="btn_agregar" value="+" id="btn_agregar">
+                    </form>
+                    <form action="./destruir.php" id="form-cerrar">
+                        <button type="submit" class="navbar-brand btn-link">Cerrar Session</button>
+                    </form>
+                </div>
             </nav>
             <?php if (isset($_POST['btn_agregar']) || isset($_POST['btn_busqueda_usuarios'])){?>
                 <div class="input-group">
@@ -67,17 +69,17 @@
                     if (isset($_POST['btn_busqueda_usuarios']) && !empty($_POST['query_usuarios'])) {
                         try {
                             $query_usuarios = mysqli_real_escape_string($conexion, $_POST['query_usuarios']);
-                            $sql_usuarios = "SELECT * FROM tbl_usuarios WHERE nombre_usuario LIKE '%$query_usuarios%'";
+                            $sql_usuarios = "SELECT * FROM tbl_usuarios WHERE nombre_usuario LIKE '%$query_usuarios%' OR nombre_persona LIKE '%$query_usuarios%'";
                             $resultado = mysqli_query($conexion, $sql_usuarios);
                             $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
                             if (count($usuarios) > 0) {
-                                echo "<table class='table table-hover'>";
+                                echo "<table>";
                                 foreach ($usuarios as $usuario) {
                                     echo "<tr>
                                         <td>" . htmlspecialchars($usuario['nombre_usuario']) . "</td>
                                         <td>
-                                            <form action='./inserts/insert_solicitud.php?id=" . $usuario['id_usuario'] . "' method='post'>
-                                                <input type='submit' name='btn_solicitud' value='+'>
+                                            <form class='tr-solicitud' action='./inserts/insert_solicitud.php?id=" . $usuario['id_usuario'] . "' method='post'>
+                                                <input type='submit' name='btn_solicitud' value='+' id='btn_agregar'>
                                             </form>
                                         </td>
                                     </tr>";
@@ -112,14 +114,14 @@
                             $resultado = mysqli_stmt_get_result($stmt);
                             $solicitudes = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
                             if (count($solicitudes) > 0) {
-                                echo "<table class='table table-hover'>";
+                                echo "<br><table>";
                                 foreach ($solicitudes as $solicitud) {
                                     echo "<tr>
                                         <td>" . htmlspecialchars($solicitud['nombre_persona']) . "</td>
                                         <td>
-                                            <form action='./inserts/insert_solicitud.php?id=" . htmlspecialchars($solicitud['id_solicitante']) . "' method='post'>
-                                                <input type='submit' name='btn_solicitud_update_ok' value='+'>
-                                                <input type='submit' name='btn_solicitud_update_nok' value='-'>
+                                            <form class='tr-solicitud' action='./inserts/insert_solicitud.php?id=" . htmlspecialchars($solicitud['id_solicitante']) . "' method='post'>
+                                                <input type='submit' name='btn_solicitud_update_ok' value='+' id='btn_agregar'>
+                                                <input type='submit' name='btn_solicitud_update_nok' value='-' id='btn_agregar'>
 
                                             </form>
                                         </td>
@@ -156,10 +158,10 @@
             if (isset($_POST['amigos-busqueda'])) {
                 try {
                     $amigoform = mysqli_real_escape_string($conexion, $_POST['amigos']);
-                    $sql_busqueda_amigos = "SELECT u.id_usuario, u.nombre_usuario 
+                    $sql_busqueda_amigos = "SELECT u.id_usuario, u.nombre_usuario, u.nombre_persona 
                                             FROM tbl_amigos a 
-                                            INNER JOIN tbl_usuarios u ON a.id_amigo = u.id_usuario 
-                                            WHERE u.nombre_usuario LIKE '%$amigoform%'";
+                                            INNER JOIN tbl_usuarios u ON a.id_usuarioa = u.id_usuario OR a.id_usuariob
+                                            WHERE u.nombre_usuario LIKE '%$amigoform%' OR u.nombre_persona LIKE '%$amigoform%'";
                     $resultado = mysqli_query($conexion, $sql_busqueda_amigos);
                     
                     if (mysqli_num_rows($resultado) > 0) {
@@ -194,7 +196,7 @@
 
             // Mostrar amigos encontrados (filtrados o todos)
             if (count($amigos) > 0) {
-                echo "<table class='table table-hover'>";
+                echo "<table>";
                 foreach ($amigos as $amigo) {
                     // Añadir un enlace o un botón para seleccionar el amigo
                     echo "<tr><td><a href='?id_amigo=" . htmlspecialchars($amigo['id_usuario']) . "'>" . htmlspecialchars($amigo['nombre_usuario']) . "</a></td></tr>";   
@@ -219,64 +221,68 @@
             </div>
             <div class="mensajes">
             <?php
-            try {
-                mysqli_begin_transaction($conexion);
+try {
+    // Iniciar la transacción
+    mysqli_begin_transaction($conexion);
 
-                // Paso 1: Obtener la conversación y los mensajes en una sola consulta
-                $sql_chat = "SELECT c.id_conversacion, m.mensaje, m.fecha_envio, u.nombre_usuario, u.id_usuario
-                            FROM tbl_conversaciones c
-                            INNER JOIN tbl_mensajes m ON c.id_conversacion = m.id_conversacion
-                            INNER JOIN tbl_usuarios u ON (u.id_usuario = c.id_usuarioa OR u.id_usuario = c.id_usuariob)
-                            WHERE (c.id_usuarioa = ? AND c.id_usuariob = ?)
-                                OR (c.id_usuarioa = ? AND c.id_usuariob = ?)
-                            ORDER BY m.fecha_envio";
+    // Consulta SQL para obtener los mensajes de la conversación entre dos usuarios
+    $sql_chat = "SELECT m.mensaje, m.fecha_envio, u.nombre_usuario, m.id_usuario
+                 FROM tbl_mensajes m
+                 INNER JOIN tbl_conversaciones c ON c.id_conversacion = m.id_conversacion
+                 INNER JOIN tbl_usuarios u ON m.id_usuario = u.id_usuario
+                 WHERE (c.id_usuarioa = ? AND c.id_usuariob = ?)
+                    OR (c.id_usuarioa = ? AND c.id_usuariob = ?)
+                 ORDER BY m.fecha_envio";
 
-                $stmt_chat = mysqli_stmt_init($conexion);
-                if (mysqli_stmt_prepare($stmt_chat, $sql_chat)) {
-                    $id_usuario = $_SESSION['id_usuario'];
-                    $id_amigo = isset($_GET['id_amigo']) ? $_GET['id_amigo'] : "";
+    // Preparar la consulta
+    $stmt_chat = mysqli_stmt_init($conexion);
+    if (mysqli_stmt_prepare($stmt_chat, $sql_chat)) {
+        // Obtener los IDs del usuario actual y del amigo
+        $id_usuario = $_SESSION['id_usuario'];
+        $id_amigo = isset($_GET['id_amigo']) ? $_GET['id_amigo'] : "";
 
-                    // Vincular parámetros
-                    mysqli_stmt_bind_param($stmt_chat, "iiii", $id_usuario, $id_amigo, $id_amigo, $id_usuario);
-                    mysqli_stmt_execute($stmt_chat);
-                    $result_chat = mysqli_stmt_get_result($stmt_chat);
-                    $chat = mysqli_fetch_all($result_chat, MYSQLI_ASSOC);
+        // Vincular parámetros
+        mysqli_stmt_bind_param($stmt_chat, "iiii", $id_usuario, $id_amigo, $id_amigo, $id_usuario);
+        mysqli_stmt_execute($stmt_chat);
+        $result_chat = mysqli_stmt_get_result($stmt_chat);
+        $chat = mysqli_fetch_all($result_chat, MYSQLI_ASSOC);
 
-                    // Mostrar mensajes intercalados
-                    if (count($chat) > 0) {
-                        echo "<div class='chat-container'>";
-                            foreach ($chat as $mensaje) {
-                                // Determina si el mensaje es del usuario actual
-                                if ($mensaje['id_usuario'] == $_SESSION['id_usuario']) {
-                                    // Mensaje del usuario logueado
-                                    echo "<div class='mensaje mio'>";
-                                        echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
-                                        echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
-                                    echo "</div>";
-                                } else {
-                                    // Mensaje del amigo
-                                    echo "<div class='mensaje amigo'>";
-                                        echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
-                                        echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
-                                    echo "</div>";
-                                }
-                            }                        
-                        echo "</div>";
-                    } else {
-                        echo "<div id='vacio'><div>No hay mensajes en esta conversación.</div></div>";
-                    }
-                } else {
-                    echo "<div id='vacio'><div>Error en la consulta de mensajes.</div></div>";
+        // Mostrar los mensajes intercalados
+        if (count($chat) > 0) {
+            echo "<div class='chat-container'>";
+            foreach ($chat as $mensaje) {
+                // Determinar si el mensaje es del usuario actual o del amigo
+                if ($mensaje['id_usuario'] == $_SESSION['id_usuario']) {
+                    // Mensaje del usuario actual
+                    echo "<br><div class='mensaje mio'>";
+                    echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
+                    echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
+                    echo "</div>";
+                } else if ($mensaje['id_usuario'] == $_GET['id_amigo']) {
+                    // Mensaje del amigo
+                    echo "<br><div class='mensaje amigo'>";
+                    echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
+                    echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
+                    echo "</div>";
                 }
-                // Confirmar la transacción
-                mysqli_commit($conexion);
-            } catch (Exception $e) {
-                // En caso de error, hacer rollback de la transacción
-                mysqli_rollback($conexion);
-                echo "<br><h6>Error: " . htmlspecialchars($e->getMessage()) . "</h6>";
             }
+            echo "</div>";
+        } else {
+            echo "<div id='vacio'><div>No hay mensajes en esta conversación.</div></div>";
+        }
+    } else {
+        echo "<div id='vacio'><div>Error en la consulta de mensajes.</div></div>";
+    }
 
-            ?>
+    // Confirmar la transacción
+    mysqli_commit($conexion);
+} catch (Exception $e) {
+    // En caso de error, hacer rollback de la transacción
+    mysqli_rollback($conexion);
+    echo "<br><h6>Error: " . htmlspecialchars($e->getMessage()) . "</h6>";
+}
+?>
+
             </div>
             <div>
                 <form action="./inserts/insert_mensaje.php" method="post">

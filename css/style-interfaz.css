@@ -27,12 +27,26 @@ body {
 .solicitud {
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 10px #333;
+    box-shadow: 0 0 10px #000000;
     z-index: 9998;
     background-color: #101d25;
     width: 30%; /* 30% de ancho para la columna izquierda */
 }
+tr {
+    z-index: 9998;
+    background-color: #1b252b !important;
+    color: #97a2a6;
+    border: 2px solid #132b38!important; /* un borde gris oscuro que complementa el fondo */
+}
 
+td{
+    padding: 8px;
+    padding-left: 20px;
+}
+.tr-solicitud{
+    display: flex;
+    justify-content: space-evenly;
+}
 .agregar {
     padding: 10px;
     margin-bottom: 10px;
@@ -137,28 +151,23 @@ h2 {
     width: 100%;
 }
 
-.mensajes2 {
-    border: 2px solid black;
-    height: 550px;
-    overflow-y: auto; /* Permitir desplazamiento si hay muchos mensajes */
-    padding: 10px;
-    background-color: #aa3434; /* Fondo blanco para los mensajes */
-    border-radius: 10px; /* Bordes redondeados */
-    box-shadow: 0 0 10px #333;
-}
-
 .mensaje {
     padding: 5px; /* Espaciado interno */
     border-radius: 10px; /* Bordes redondeados */
     position: relative; /* Posicionamiento relativo para el reloj */
     display: flex; /* Cambiar a flex para alineación */
     justify-content: flex-end; /* Alinear el contenido hacia la derecha por defecto */
+    width: fit-content;
+    max-width: 50%; /* Limitar el ancho máximo al 50% */
+    flex-direction: column
+
 }
 
 .mio {
     background-color: #133831; /* Color de fondo del mensaje del usuario */
     color: #aecdc7; /* Color del texto del usuario */
     margin-left: auto; /* Empujar a la derecha */
+    width:max-content;
 }
 
 .amigo {
@@ -168,9 +177,9 @@ h2 {
 }
 
 .mensaje-texto {
-    max-width: 50%; /* Limitar el ancho máximo al 50% */
-    width: fit-content; /* Ajustar el ancho al contenido */
-    padding: 10px; /* Espaciado interno del texto */
+    max-width: 100%; /* Limitar el ancho máximo al 50% */
+    width: 100%; /* Ajustar el ancho al contenido */
+    padding: 5px; /* Espaciado interno del texto */
     display: inline-block; /* Para que el ancho se respete */
     text-align: left;
     word-wrap: break-word; /* Permitir que las palabras se dividan si son demasiado largas */
@@ -181,7 +190,12 @@ h2 {
     padding-right: 10px !important;
     background-color: #1f2c34 !important;
 }
+.navbar-div{
+    width: 100%;
+    display: flex;
 
+}
+form-
 a {
     color: #aecdc7 !important;
 }
@@ -190,7 +204,11 @@ a {
     font-size: 12px; /* Tamaño de fuente más pequeño */
     color: #888; /* Color gris para la información */
     margin-top: 5px; /* Espaciado superior para separar del texto del mensaje */
-    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    word-wrap: break-word;
+
 }
 
 form {
@@ -200,7 +218,7 @@ form {
     padding: 10px;
     position: sticky;
     bottom: 0; /* Asegura que el formulario esté siempre abajo */
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 input[type="text"] {
@@ -226,13 +244,6 @@ button {
     cursor: pointer;
     transition: 1s;
 }
-
-button:hover,
-#btn_agregar:hover {
-    transition: 0.3s;
-    background-color: rgb(26, 77, 67) !important;
-}
-
 #btn_agregar {
     padding: 5px 10px;
     background-color: #133831 !important;
@@ -242,6 +253,12 @@ button:hover,
     border-radius: 20px !important;
     cursor: pointer;
     transition: 1s;
+}
+
+button:hover,
+#btn_agregar:hover {
+    transition: 0.3s;
+    background-color: rgb(26, 77, 67) !important;
 }
 
 input[class="btn-del"] {
@@ -264,4 +281,7 @@ h1 {
 
 form {
     margin: 0; /* Elimina el margen del formulario */
+}
+#form-cerrar{
+    justify-content: flex-end;
 }

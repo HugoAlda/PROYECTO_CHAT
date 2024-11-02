@@ -26,10 +26,11 @@ CREATE TABLE tbl_conversaciones (
     fecha_inicio TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla de mensajes
+-- Tabla de mensajes (incluyendo id_usuario para identificar al remitente)
 CREATE TABLE tbl_mensajes (
     id_mensaje INT PRIMARY KEY AUTO_INCREMENT,
     id_conversacion INT NOT NULL,
+    id_usuario INT NOT NULL,  -- Nueva columna para identificar al usuario que envió el mensaje
     mensaje TEXT NOT NULL,
     fecha_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -43,9 +44,9 @@ CREATE TABLE tbl_solicitudes_amistad (
 );
 
 -- Claves foráneas para la tabla tbl_mensajes
-
 ALTER TABLE tbl_mensajes
-ADD CONSTRAINT fk_id_conversacion FOREIGN KEY (id_conversacion) REFERENCES tbl_conversaciones(id_conversacion);
+ADD CONSTRAINT fk_id_conversacion FOREIGN KEY (id_conversacion) REFERENCES tbl_conversaciones(id_conversacion),
+ADD CONSTRAINT fk_id_usuario FOREIGN KEY (id_usuario) REFERENCES tbl_usuarios(id_usuario);  -- Nueva clave foránea para id_usuario
 
 -- Claves foráneas para la tabla tbl_amigos
 ALTER TABLE tbl_amigos

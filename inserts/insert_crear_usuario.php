@@ -9,7 +9,7 @@ session_start();
         $passwd = isset($_POST['passwd']) ? htmlspecialchars($_POST['passwd']) : '';
         
         if (empty($usuario) || empty($passwd) || empty($nombre) || empty($correo)) {
-            header('Location: crear.php?error=true');
+            header('Location: ../crear.php?error=true');
             exit();
         } else {
             try {
