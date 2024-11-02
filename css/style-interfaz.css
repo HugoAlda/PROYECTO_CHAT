@@ -37,6 +37,12 @@ tr {
     background-color: #1b252b !important;
     color: #97a2a6;
     border: 2px solid #132b38!important; /* un borde gris oscuro que complementa el fondo */
+    cursor: pointer;
+    transition: 0.3s;
+}
+tr:hover{
+    transition: 0.3s;
+    background-color: #132b38 !important;
 }
 
 td{
@@ -46,6 +52,7 @@ td{
 .tr-solicitud{
     display: flex;
     justify-content: space-evenly;
+    padding: 0px;
 }
 .agregar {
     padding: 10px;
@@ -195,9 +202,12 @@ h2 {
     display: flex;
 
 }
-form-
+
 a {
     color: #aecdc7 !important;
+    text-decoration: none !important;
+    width: 100%;
+    padding-left: 20px;
 }
 
 .mensaje-informacion {

@@ -3,7 +3,12 @@ body {
     background-color: #f0f0f0;
     text-align: center;
 }
-
+.error{
+    padding: 3px;
+    background-color: rgb(255, 81, 81) !important;
+    font-weight: bold;
+    border-radius: 10px;
+}
 form {
     width: 250px;
     margin: 50px auto;

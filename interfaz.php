@@ -1,7 +1,8 @@
 <?php
     require_once 'conexion.php';
     session_start();
-    
+    mysqli_autocommit($conexion, false);
+    mysqli_begin_transaction($conexion, MYSQLI_TRANS_START_READ_WRITE);
     $nombre_usuario = $_SESSION['nombre_usuario']; 
     $id_usuario = "";
     try {
@@ -18,9 +19,7 @@
         echo "<br><h6>" . htmlspecialchars($e->getMessage()) . "</h6>";
         exit;
     }
-    
-    mysqli_autocommit($conexion, false);
-    mysqli_begin_transaction($conexion, MYSQLI_TRANS_START_READ_WRITE);
+
 ?>
 
 <!DOCTYPE html>
@@ -158,21 +157,26 @@
             if (isset($_POST['amigos-busqueda'])) {
                 try {
                     $amigoform = mysqli_real_escape_string($conexion, $_POST['amigos']);
-                    $sql_busqueda_amigos = "SELECT u.id_usuario, u.nombre_usuario, u.nombre_persona 
-                                            FROM tbl_amigos a 
-                                            INNER JOIN tbl_usuarios u ON a.id_usuarioa = u.id_usuario OR a.id_usuariob
-                                            WHERE u.nombre_usuario LIKE '%$amigoform%' OR u.nombre_persona LIKE '%$amigoform%'";
+                    $id_usuario_actual = $_SESSION['id_usuario']; // Suponiendo que guardas el ID del usuario actual en la sesión
+                    $sql_busqueda_amigos = "
+                        SELECT u.id_usuario, u.nombre_usuario, u.nombre_persona 
+                        FROM tbl_amigos a 
+                        INNER JOIN tbl_usuarios u ON 
+                            (a.id_usuarioa = u.id_usuario AND a.id_usuariob = $id_usuario_actual) 
+                            OR (a.id_usuariob = u.id_usuario AND a.id_usuarioa = $id_usuario_actual)
+                        WHERE u.nombre_usuario LIKE '%$amigoform%'
+                    ";
+                
                     $resultado = mysqli_query($conexion, $sql_busqueda_amigos);
-                    
+                
                     if (mysqli_num_rows($resultado) > 0) {
                         $amigos = mysqli_fetch_all($resultado, MYSQLI_ASSOC); 
                     } else {
                         echo "<br><h6>No se encontraron amigos con ese nombre.</h6>";
                     }
-
                 } catch (Exception $e) {
                     echo "<br><h6>" . htmlspecialchars($e->getMessage()) . "</h6>";
-                }
+                }                
             } else {
                 try {
                     $id_usuario = $_SESSION['id_usuario'];

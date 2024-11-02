@@ -16,6 +16,12 @@
         <input type="password" id="passwd_usuario" name="passwd_usuario">
         <br><br>
         <input type="submit" name="btn_iniciar" value="Iniciar Sesión">
+        <br><br>
+        <?php
+            if (isset($_GET['error'])) {
+                echo "<div class='error'><p>Algun campo es incorrecto o no esta rellenado</p></div>";
+            }
+        ?>
     </form>
     
     <!-- Formulario separado para "Crear Cuenta" -->

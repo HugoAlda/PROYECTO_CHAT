@@ -20,17 +20,15 @@
         <input type="password" id="contraseña" name="passwd">
         <br><br>
         <input type="submit" name="btn_crear_cuenta" value="Crear Cuenta">
+        <br><br>
+        <?php
+            if (isset($_GET['error'])) {
+                echo "<div class='error'><p>Algun campo es incorrecto o no esta rellenado</p></div>";
+            }
+        ?>
     </form>
-    <div class="error"></div>
     <!-- Botón para volver al formulario de inicio de sesión -->
     <form action="index.php" method="post">
         <input type="submit" name="Volver" value="Volver">
     </form>
 </body>
-<?php
-if (isset($_GET['error'])) {
-    echo "div";
-}
-
-
-?>

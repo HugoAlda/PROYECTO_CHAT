@@ -3,11 +3,12 @@ require_once '../conexion.php';
 session_start();
     
 if (isset($_POST['btn_mensaje']) && isset($_POST['id_amigo'])) {
-    $mensaje = htmlspecialchars($_POST['mensaje']);
-    $id_amigo = $_POST['id_amigo'];
-    $id_usuario_actual = $_SESSION['id_usuario'];
-    mysqli_autocommit($conexion, false); 
+    $mensaje = isset($_POST['mensaje']) ? mysqli_real_escape_string($conexion, htmlspecialchars($_POST['mensaje'])) : '';
+    $id_usuario_actual = isset($_SESSION['id_usuario']) ? mysqli_real_escape_string($conexion, htmlspecialchars($_SESSION['id_usuario'])) : '';
+    $id_amigo = isset( $_POST['id_amigo']) ? mysqli_real_escape_string($conexion, htmlspecialchars( $_POST['id_amigo'])) : '';
     try {
+        mysqli_autocommit($conexion, false);
+        mysqli_begin_transaction($conexion, MYSQLI_TRANS_START_READ_WRITE);        
         // Consulta para verificar o crear una conversación
         $sql_conversacion = "SELECT id_conversacion 
                              FROM tbl_conversaciones 
@@ -20,7 +21,6 @@ if (isset($_POST['btn_mensaje']) && isset($_POST['id_amigo'])) {
         $conversacion = mysqli_fetch_assoc($resultado_conv);
         
         if ($conversacion) {
-            // Si existe la conversación, obtener su id
             $id_conversacion = $conversacion['id_conversacion'];
         } else {
             // Si no existe la conversación, crearla
