@@ -44,12 +44,12 @@ body {
     flex: 1;
 }
 
-.amigos h6{
+.amigos h6 {
     text-align: center;
     color: white;
 }
 
-.solicitud h6{
+.solicitud h6 {
     text-align: center;
     color: white;
 }
@@ -59,26 +59,30 @@ h2 {
     color: white !important;
 }
 
-.form-outline{
+.form-outline {
     padding: 1%;
     width: 86%;
 }
 
-#amigos-navbar,#agregar-navbar{
+#amigos-navbar,
+#agregar-navbar {
     background-color: #1e292f;
     width: 100%;
     border-radius: 0px;
 }
 
-#form1{
+#form1 {
     width: 100%;
     border-radius: 20px;
     background-color: #101d25;
-    color: #97a2a6 !important; 
+    color: #97a2a6 !important;
     border: 2px solid #1a394b;
 }
 
-#form1::placeholder { color: #97a2a6 ; }
+#form1::placeholder {
+    color: #97a2a6;
+}
+
 .header {
     display: flex; /* Usar flexbox para alinear elementos en una línea */
     align-items: center; /* Centra verticalmente el contenido */
@@ -89,9 +93,7 @@ h2 {
     padding: 10px;
     width: 100%;
     padding-top: 30px; /* Asegura que el formulario esté siempre abajo */
-    align-content: center
-
-
+    align-content: center;
 }
 
 .chat {
@@ -108,23 +110,24 @@ h2 {
 .chat > div {
     background-color: transparent; /* Elimina el color de fondo de los elementos internos */
     margin-bottom: 10px;
-    
 }
-#vacio{
+
+#vacio {
     display: flex;
     text-align: center;
     justify-content: center;
     width: 100%;
     padding: 5px;
     border-radius: 10px;
-
 }
-#vacio > div{
+
+#vacio > div {
     width: fit-content;
     background-color: white;
     padding: 5px;
     border-radius: 10px;
 }
+
 .mensajes {
     height: 550px;
     overflow-y: auto; /* Permitir desplazamiento si hay muchos mensajes */
@@ -149,26 +152,40 @@ h2 {
     border-radius: 10px; /* Bordes redondeados */
     position: relative; /* Posicionamiento relativo para el reloj */
     display: flex; /* Cambiar a flex para alineación */
-    justify-content: flex-end; /* Alinear el contenido hacia la derecha */
+    justify-content: flex-end; /* Alinear el contenido hacia la derecha por defecto */
+}
+
+.mio {
+    background-color: #133831; /* Color de fondo del mensaje del usuario */
+    color: #aecdc7; /* Color del texto del usuario */
+    margin-left: auto; /* Empujar a la derecha */
+}
+
+.amigo {
+    background-color: #f8d7da; /* Color de fondo del mensaje del amigo */
+    color: #000; /* Color del texto del amigo */
+    justify-content: flex-start; /* Alinear a la izquierda */
 }
 
 .mensaje-texto {
-    width: max-content; /* Ocupará el 50% del ancho del contenedor .mensaje */
-    background-color: #133831; /* Color de fondo del mensaje */
-    color: #aecdc7; /* Color del texto */
-    border-radius: 10px; /* Bordes redondeados */
+    max-width: 50%; /* Limitar el ancho máximo al 50% */
+    width: fit-content; /* Ajustar el ancho al contenido */
     padding: 10px; /* Espaciado interno del texto */
     display: inline-block; /* Para que el ancho se respete */
     text-align: left;
+    word-wrap: break-word; /* Permitir que las palabras se dividan si son demasiado largas */
 }
-.navbar{
+
+.navbar {
     padding-left: 10px !important;
     padding-right: 10px !important;
     background-color: #1f2c34 !important;
 }
-a{
-    color: #aecdc7 !important; 
+
+a {
+    color: #aecdc7 !important;
 }
+
 .mensaje-informacion {
     font-size: 12px; /* Tamaño de fuente más pequeño */
     color: #888; /* Color gris para la información */
@@ -195,9 +212,11 @@ input[type="text"] {
     background-color: #101d25 !important;
     color: #97a2a6 !important;
 }
+
 input[type="text"]::after {
     border: 2px solid #326d8f !important;
 }
+
 button {
     padding: 8px 20px;
     background-color: #133831 !important;
@@ -208,11 +227,13 @@ button {
     transition: 1s;
 }
 
-button:hover,#btn_agregar:hover {
+button:hover,
+#btn_agregar:hover {
     transition: 0.3s;
     background-color: rgb(26, 77, 67) !important;
 }
-#btn_agregar{
+
+#btn_agregar {
     padding: 5px 10px;
     background-color: #133831 !important;
     border: none;
@@ -222,6 +243,7 @@ button:hover,#btn_agregar:hover {
     cursor: pointer;
     transition: 1s;
 }
+
 input[class="btn-del"] {
     padding: 10px 20px;
     background-color: #ffffff;
@@ -243,4 +265,3 @@ h1 {
 form {
     margin: 0; /* Elimina el margen del formulario */
 }
-

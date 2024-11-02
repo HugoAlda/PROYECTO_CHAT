@@ -211,16 +211,11 @@
                 <div class="header">
                     <h1><?php echo $_SESSION['nombre_usuario']; ?></h1>
 
-<form action="./inserts/insert_vaciar_conversacion.php" method="POST">
-    <input type="hidden" name="id_amigo" value="<?php echo isset($_GET['id_amigo']) ? $_GET['id_amigo'] : ''; ?>">                    
-    <input type="submit" class="btn-del" name="btn_vaciar_conversacion" value="Vaciar Conversación">
-</form>
-
-
-<!--                    <form action="./inserts/insert_vaciar_conversacion.php" method="POST">
+                    <form action="./inserts/insert_vaciar_conversacion.php" method="POST">
+                        <input type="hidden" name="id_amigo" value="<?php echo isset($_GET['id_amigo']) ? $_GET['id_amigo'] : ''; ?>">                    
                         <input type="submit" class="btn-del" name="btn_vaciar_conversacion" value="Vaciar Conversación">
                     </form>
--->                </div>
+                </div>
             </div>
             <div class="mensajes">
             <?php
@@ -250,16 +245,22 @@
                     // Mostrar mensajes intercalados
                     if (count($chat) > 0) {
                         echo "<div class='chat-container'>";
-                        foreach ($chat as $mensaje) {
-                            // Determina si el mensaje es del usuario actual
-                            if ($mensaje['id_usuario'] == $id_usuario) {
-                                // Mensaje del usuario logueado
-                                echo "<div class='mensaje'>";
-                                echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
-                                echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
-                                echo "</div>";
-                            }
-                        }
+                            foreach ($chat as $mensaje) {
+                                // Determina si el mensaje es del usuario actual
+                                if ($mensaje['id_usuario'] == $_SESSION['id_usuario']) {
+                                    // Mensaje del usuario logueado
+                                    echo "<div class='mensaje mio'>";
+                                        echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
+                                        echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
+                                    echo "</div>";
+                                } else {
+                                    // Mensaje del amigo
+                                    echo "<div class='mensaje amigo'>";
+                                        echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
+                                        echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
+                                    echo "</div>";
+                                }
+                            }                        
                         echo "</div>";
                     } else {
                         echo "<div id='vacio'><div>No hay mensajes en esta conversación.</div></div>";
@@ -288,7 +289,7 @@
     </div>
 
     <?php
-    mysqli_commit($conexion);
+        mysqli_commit($conexion);
     ?>
 </body>
 </html>
