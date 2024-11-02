@@ -18,7 +18,7 @@ if (isset($_POST['btn_crear_cuenta'])) {
         header('Location: ../crear.php?error=usuario_invalido');
         exit();
     }
-    if (strlen($nombre) < 3  || !preg_match('/^[a-zA-Z]+[a-zA-Z0-9]*$/', $nombre)) {
+    if (strlen($nombre) < 3) {
         header('Location: ../crear.php?error=nombre_invalido');
         exit();
     }
@@ -41,7 +41,8 @@ if (isset($_POST['btn_crear_cuenta'])) {
         $sql = "INSERT INTO tbl_usuarios (nombre_usuario, nombre_persona, correo_usuario, passwd_usuario) VALUES (?, ?, ?, ?)";
         $stmt = mysqli_stmt_init($conexion);
         
-        if (mysqli_prepare($conexion, $sql)) {
+        // Preparar la declaración usando el objeto de declaración
+        if (mysqli_stmt_prepare($stmt, $sql)) {
             // Usar la contraseña encriptada en la consulta
             mysqli_stmt_bind_param($stmt, "ssss", $usuario, $nombre, $correo, $passwd_encriptada);
             mysqli_stmt_execute($stmt);
