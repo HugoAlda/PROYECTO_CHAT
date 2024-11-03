@@ -2,15 +2,12 @@
 
     $dbserver="localhost";
     $dbusername="root";
-    // Contraseña Roberto
-    // $dbpasswordB="qazQAZ123";
-    // Contraseña Hugo
-    $dbpasswordH="qazQAZ123";
+    $dbpassword="30891b92";
     $dbbasedatos="bd_chat";
     
     try {
     
-        $conexion = mysqli_connect($dbserver, $dbusername,$dbpasswordH, $dbbasedatos);
+        $conexion = mysqli_connect($dbserver, $dbusername,$dbpassword, $dbbasedatos);
     }
     catch (Exception $e) {
         echo "Error de conexión: ". $e->getMessage();

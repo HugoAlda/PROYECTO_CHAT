@@ -50,7 +50,7 @@
                     </form>
                 </div>
             </nav>
-            <?php if (isset($_POST['btn_agregar']) || isset($_POST['btn_busqueda_usuarios'])){?>
+            <?php if (isset($_POST['btn_agregar']) || isset($_POST['btn_busqueda_usuarios'])) { ?>
                 <div class="input-group">
                     <form action="" method="post" id="amigos-navbar">
                         <div class="input-group">
@@ -121,7 +121,6 @@
                                             <form class='tr-solicitud' action='./inserts/insert_solicitud.php?id=" . htmlspecialchars($solicitud['id_solicitante']) . "' method='post'>
                                                 <input type='submit' name='btn_solicitud_update_ok' value='+' id='btn_agregar'>
                                                 <input type='submit' name='btn_solicitud_update_nok' value='-' id='btn_agregar'>
-
                                             </form>
                                         </td>
                                     </tr>";
@@ -136,7 +135,7 @@
                         echo "<br><h6>" . htmlspecialchars($e->getMessage()) . "</h6>";
                     }
                 ?>
-            <?php } else {?>
+            <?php } else { ?>
                 <div class="input-group">
                     <form action="" method="post" id="agregar-navbar">
                         <div class="input-group">
@@ -212,89 +211,101 @@
         ?>
         <?php } ?>
         </div>
+        
         <div class="chat">
+            <?php if (isset($_GET['id_amigo']) && !empty($_GET['id_amigo'])) { 
+                // Obtener el nombre del amigo seleccionado
+                $id_amigo = $_GET['id_amigo'];
+                $sql_nombre_amigo = "SELECT nombre_usuario FROM tbl_usuarios WHERE id_usuario = ?";
+                $stmt_nombre_amigo = mysqli_prepare($conexion, $sql_nombre_amigo);
+                mysqli_stmt_bind_param($stmt_nombre_amigo, "i", $id_amigo);
+                mysqli_stmt_execute($stmt_nombre_amigo);
+                $resultado_nombre_amigo = mysqli_stmt_get_result($stmt_nombre_amigo);
+                $amigo = mysqli_fetch_assoc($resultado_nombre_amigo);
+                $nombre_amigo = htmlspecialchars($amigo['nombre_usuario']);
+            ?>
             <div>
                 <div class="header">
-                    <h1><?php echo $_SESSION['nombre_usuario']; ?></h1>
-
+                    <h1><?php echo $nombre_amigo; ?></h1> <!-- Nombre del amigo -->
                     <form action="./inserts/insert_vaciar_conversacion.php" method="POST">
-                        <input type="hidden" name="id_amigo" value="<?php echo isset($_GET['id_amigo']) ? $_GET['id_amigo'] : ''; ?>">                    
+                        <input type="hidden" name="id_amigo" value="<?php echo $id_amigo; ?>">                    
                         <input type="submit" class="btn-del" name="btn_vaciar_conversacion" value="Vaciar Conversación">
                     </form>
                 </div>
             </div>
             <div class="mensajes">
-            <?php
-try {
-    // Iniciar la transacción
-    mysqli_begin_transaction($conexion);
-
-    // Consulta SQL para obtener los mensajes de la conversación entre dos usuarios
-    $sql_chat = "SELECT m.mensaje, m.fecha_envio, u.nombre_usuario, m.id_usuario
-                 FROM tbl_mensajes m
-                 INNER JOIN tbl_conversaciones c ON c.id_conversacion = m.id_conversacion
-                 INNER JOIN tbl_usuarios u ON m.id_usuario = u.id_usuario
-                 WHERE (c.id_usuarioa = ? AND c.id_usuariob = ?)
-                    OR (c.id_usuarioa = ? AND c.id_usuariob = ?)
-                 ORDER BY m.fecha_envio";
-
-    // Preparar la consulta
-    $stmt_chat = mysqli_stmt_init($conexion);
-    if (mysqli_stmt_prepare($stmt_chat, $sql_chat)) {
-        // Obtener los IDs del usuario actual y del amigo
-        $id_usuario = $_SESSION['id_usuario'];
-        $id_amigo = isset($_GET['id_amigo']) ? $_GET['id_amigo'] : "";
-
-        // Vincular parámetros
-        mysqli_stmt_bind_param($stmt_chat, "iiii", $id_usuario, $id_amigo, $id_amigo, $id_usuario);
-        mysqli_stmt_execute($stmt_chat);
-        $result_chat = mysqli_stmt_get_result($stmt_chat);
-        $chat = mysqli_fetch_all($result_chat, MYSQLI_ASSOC);
-
-        // Mostrar los mensajes intercalados
-        if (count($chat) > 0) {
-            echo "<div class='chat-container'>";
-            foreach ($chat as $mensaje) {
-                // Determinar si el mensaje es del usuario actual o del amigo
-                if ($mensaje['id_usuario'] == $_SESSION['id_usuario']) {
-                    // Mensaje del usuario actual
-                    echo "<br><div class='mensaje mio'>";
-                    echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
-                    echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
-                    echo "</div>";
-                } else if ($mensaje['id_usuario'] == $_GET['id_amigo']) {
-                    // Mensaje del amigo
-                    echo "<br><div class='mensaje amigo'>";
-                    echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
-                    echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
-                    echo "</div>";
-                }
-            }
-            echo "</div>";
-        } else {
-            echo "<div id='vacio'><div>No hay mensajes en esta conversación.</div></div>";
-        }
-    } else {
-        echo "<div id='vacio'><div>Error en la consulta de mensajes.</div></div>";
-    }
-
-    // Confirmar la transacción
-    mysqli_commit($conexion);
-} catch (Exception $e) {
-    // En caso de error, hacer rollback de la transacción
-    mysqli_rollback($conexion);
-    echo "<br><h6>Error: " . htmlspecialchars($e->getMessage()) . "</h6>";
-}
-?>
-
+                <?php
+                    try {
+                        // Iniciar la transacción
+                        mysqli_begin_transaction($conexion);
+                    
+                        // Consulta SQL para obtener los mensajes de la conversación entre dos usuarios
+                        $sql_chat = "SELECT m.mensaje, m.fecha_envio, u.nombre_usuario, m.id_usuario
+                                     FROM tbl_mensajes m
+                                     INNER JOIN tbl_conversaciones c ON c.id_conversacion = m.id_conversacion
+                                     INNER JOIN tbl_usuarios u ON m.id_usuario = u.id_usuario
+                                     WHERE (c.id_usuarioa = ? AND c.id_usuariob = ?)
+                                        OR (c.id_usuarioa = ? AND c.id_usuariob = ?)
+                                     ORDER BY m.fecha_envio";
+    
+                        // Preparar la consulta
+                        $stmt_chat = mysqli_stmt_init($conexion);
+                        if (mysqli_stmt_prepare($stmt_chat, $sql_chat)) {
+                            // Obtener los IDs del usuario actual y del amigo
+                            $id_usuario = $_SESSION['id_usuario'];
+                        
+                            // Vincular parámetros
+                            mysqli_stmt_bind_param($stmt_chat, "iiii", $id_usuario, $id_amigo, $id_amigo, $id_usuario);
+                            mysqli_stmt_execute($stmt_chat);
+                            $result_chat = mysqli_stmt_get_result($stmt_chat);
+                            $chat = mysqli_fetch_all($result_chat, MYSQLI_ASSOC);
+                        
+                            // Mostrar los mensajes intercalados
+                            if (count($chat) > 0) {
+                                echo "<div class='chat-container'>";
+                                foreach ($chat as $mensaje) {
+                                    // Determinar si el mensaje es del usuario actual o del amigo
+                                    if ($mensaje['id_usuario'] == $_SESSION['id_usuario']) {
+                                        // Mensaje del usuario actual
+                                        echo "<br><div class='mensaje mio'>";
+                                            echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
+                                            echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
+                                        echo "</div>";
+                                    } else if ($mensaje['id_usuario'] == $id_amigo) {
+                                        // Mensaje del amigo
+                                        echo "<br><div class='mensaje amigo'>";
+                                            echo "<div class='mensaje-texto'>" . htmlspecialchars($mensaje['mensaje']) . "</div>";
+                                            echo "<div class='mensaje-informacion'>" . htmlspecialchars($mensaje['nombre_usuario']) . " - " . htmlspecialchars($mensaje['fecha_envio']) . "</div>";
+                                        echo "</div>";
+                                    }
+                                }
+                                echo "</div>";
+                            } else {
+                                echo "<div id='vacio'><div>No hay mensajes en esta conversación.</div></div>";
+                            }
+                        } else {
+                            echo "<div id='vacio'><div>Error en la consulta de mensajes.</div></div>";
+                        }
+                    
+                        // Confirmar la transacción
+                        mysqli_commit($conexion);
+                    } catch (Exception $e) {
+                        // En caso de error, hacer rollback de la transacción
+                        mysqli_rollback($conexion);
+                        echo "<br><h6>Error: " . htmlspecialchars($e->getMessage()) . "</h6>";
+                    }
+                ?>
             </div>
             <div>
                 <form action="./inserts/insert_mensaje.php" method="post">
-                    <input type="hidden" name="id_amigo" value="<?php echo isset($_GET['id_amigo']) ? $_GET['id_amigo'] : ''; ?>">                    
+                    <input type="hidden" name="id_amigo" value="<?php echo $id_amigo; ?>">                    
                     <input type="text" name="mensaje" placeholder="Escribe un mensaje...">
                     <button type="submit" name="btn_mensaje">Enviar</button>
                 </form>
             </div>
+            <?php } else { ?>
+                <div id="default-chat"><div>No has seleccionado a ningún amigo para chatear.</div></div>
+            <?php } ?>
         </div>
     </div>
 

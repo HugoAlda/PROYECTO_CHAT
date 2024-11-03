@@ -107,13 +107,12 @@ h2 {
 .header {
     display: flex; /* Usar flexbox para alinear elementos en una línea */
     align-items: center; /* Centra verticalmente el contenido */
-    justify-content: space-between; /* Espacio entre el título y el formulario */
+    /* justify-content: space-between; Espacio entre el título y el formulario */
     background-color: #1f2c34;
     box-shadow: 6px -1px 10px #333;
     z-index: 9999;
-    padding: 10px;
+    padding: 6px;
     width: 100%;
-    padding-top: 30px; /* Asegura que el formulario esté siempre abajo */
     align-content: center;
 }
 
@@ -143,6 +142,23 @@ h2 {
 }
 
 #vacio > div {
+    width: fit-content;
+    background-color: white;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+#default-chat {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    padding: 5px;
+    border-radius: 10px;
+    margin-top: 450px;
+}
+
+#default-chat > div {
     width: fit-content;
     background-color: white;
     padding: 5px;
@@ -278,6 +294,7 @@ input[class="btn-del"] {
     color: black;
     border-radius: 20px;
     cursor: pointer;
+    margin-left: auto;
 }
 
 input[class="btn-del"]:hover {
@@ -287,6 +304,7 @@ input[class="btn-del"]:hover {
 
 h1 {
     margin: 0; /* Elimina el margen predeterminado del título */
+    margin-left: 20px;
 }
 
 form {
