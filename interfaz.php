@@ -1,11 +1,32 @@
 <?php
     require_once 'conexion.php';
+
     session_start();
+
+    // Verificar si la sesión está iniciada
+    if (!isset($_SESSION['nombre_usuario'])) {
+        header("Location: index.php?session_no_iniciada");
+        exit();
+    }
+
+    // Verificar si el usuario existe en la base de datos
+    $nombre_usuario = $_SESSION['nombre_usuario'];
+    $sql = "SELECT id_usuario FROM tbl_usuarios WHERE nombre_usuario = ?";
+    $stmt = mysqli_prepare($conexion, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $nombre_usuario);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+
+    if (mysqli_num_rows($resultado) === 0) {
+        header("Location: destruir.php");
+        exit();
+    }
+
     mysqli_autocommit($conexion, false);
     mysqli_begin_transaction($conexion, MYSQLI_TRANS_START_READ_WRITE);
-    $nombre_usuario = $_SESSION['nombre_usuario']; 
-    $id_usuario = "";
+
     try {
+        // Obtener el ID del usuario
         $sql = "SELECT id_usuario FROM tbl_usuarios WHERE nombre_usuario = ?";
         $stmt = mysqli_stmt_init($conexion);
         if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -19,7 +40,6 @@
         echo "<br><h6>" . htmlspecialchars($e->getMessage()) . "</h6>";
         exit;
     }
-
 ?>
 
 <!DOCTYPE html>
@@ -195,7 +215,15 @@
             if (count($amigos) > 0) {
                 echo "<table>";
                 foreach ($amigos as $amigo) {
-                    echo "<tr><td><a href='?id_amigo=" . htmlspecialchars($amigo['id_usuario']) . "'>" . htmlspecialchars($amigo['nombre_usuario']) . "</a></td></tr>";   
+                    echo "<tr>
+                    <td stlye='display: flex; justify-content: space-between;'>
+                        <a href='?id_amigo=" . htmlspecialchars($amigo['id_usuario']) . "'>" . htmlspecialchars($amigo['nombre_usuario']) . "</a>
+                        <form method='POST' style='padding: 0px; justify-content: space-around;' action='./inserts/borrar_amigo.php?id_amigo=" . htmlspecialchars($amigo['id_usuario']) . "' method='post'>
+                            <input type='submit' name='btn_eliminar_amigo' value='Eliminar' id='btn_agregar'>
+                        </form>
+                    </td>
+                    </tr>";
+            
                 }
                 echo "</table>";
             } else {

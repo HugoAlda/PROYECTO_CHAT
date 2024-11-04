@@ -27,7 +27,7 @@
                     // Verificar la contraseña encriptada
                     if (password_verify($passwd_usuario, $usuario_db['passwd_usuario'])) {
                         $_SESSION['nombre_usuario'] = $usuario_db['nombre_usuario'];
-                        header("Location: ../interfaz.php");
+                        header("Location: ../interfaz.php");    
                         exit();
                     } else {
                         header('Location:../index.php?error=contrasena_incorrecta');

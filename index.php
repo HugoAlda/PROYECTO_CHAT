@@ -19,7 +19,7 @@
             <input type="submit" name="btn_iniciar" value="Iniciar Sesión">
             <br><br>
             <?php
-                if (isset($_GET['error'])) {
+                if (isset($_GET['error']) ) {
                     echo "<div class='error'><p>Algun campo es incorrecto o no esta rellenado</p></div>";
                 }
             ?>

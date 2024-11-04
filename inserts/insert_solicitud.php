@@ -105,8 +105,8 @@
     
     if (isset($_POST['btn_solicitud_update_nok'])) {
         // Usuario que elimina la solicitud, usando el ID almacenado en la sesión
-        $id_usuarioa_ok = $_SESSION['id_usuario'];
-        $id_usuariob_ok = $_GET['id'];
+        $id_usuariob_ok = isset($_GET['id']) ? mysqli_real_escape_string($conexion, htmlspecialchars($_GET['id'])) : '';
+        $id_usuarioa_ok = isset($_SESSION['id_usuario']) ? mysqli_real_escape_string($conexion, htmlspecialchars($_SESSION['id_usuario'])) : '';
     
         try {
             mysqli_autocommit($conexion, false);

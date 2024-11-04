@@ -223,6 +223,9 @@ a {
     text-decoration: none !important;
     width: 100%;
     padding-left: 20px;
+    display: flex;
+    align-items: center;
+    
 }
 
 .mensaje-informacion {
