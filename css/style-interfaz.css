@@ -107,13 +107,11 @@ h2 {
 .header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     background-color: #1f2c34;
     box-shadow: 6px -1px 10px #333;
     z-index: 9999;
-    padding: 10px;
     width: 100%;
-    padding-top: 30px;
+    padding-top: 12px;
     align-content: center;
 }
 
@@ -125,7 +123,7 @@ h2 {
     height: 100vh;
     box-sizing: border-box;
     z-index: 1;
-    background-image: url(../img/2b609488b4711e06e40a213e24e55d77\ \(1\).jpg);
+    background-image: url(../img/FondoWhatsAppNegro.jpg);
 }
 
 .chat > div {
@@ -143,6 +141,23 @@ h2 {
 }
 
 #vacio > div {
+    width: fit-content;
+    background-color: white;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+#default-chat {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    padding: 5px;
+    border-radius: 10px;
+    margin-top: 450px;
+}
+
+#default-chat > div {
     width: fit-content;
     background-color: white;
     padding: 5px;
@@ -278,6 +293,7 @@ input[class="btn-del"] {
     color: black;
     border-radius: 20px;
     cursor: pointer;
+    margin-left: auto;
 }
 
 input[class="btn-del"]:hover {
@@ -287,6 +303,7 @@ input[class="btn-del"]:hover {
 
 h1 {
     margin: 0;
+    padding-left: 20px;
 }
 
 form {
