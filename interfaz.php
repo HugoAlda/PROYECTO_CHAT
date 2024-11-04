@@ -66,7 +66,7 @@
                         <input type="submit" name="btn_agregar" value="Añadir Amigos" id="btn_agregar">
                     </form>
                     <form action="./destruir.php" id="form-cerrar">
-                        <button type="submit" class="navbar-brand btn-link">Cerrar Session</button>
+                        <button type="submit" class="navbar-brand btn-link">Cerrar Sesión</button>
                     </form>
                 </div>
             </nav>
@@ -94,15 +94,33 @@
                             if (count($usuarios) > 0) {
                                 echo "<table>";
                                 foreach ($usuarios as $usuario) {
-                                    echo "<tr>
-                                        <td>" . htmlspecialchars($usuario['nombre_usuario']) . "</td>
-                                        <td>
-                                            <form class='tr-solicitud' action='./inserts/insert_solicitud.php?id=" . $usuario['id_usuario'] . "' method='post'>
-                                                <input type='submit' name='btn_solicitud' value='+' id='btn_agregar'>
-                                            </form>
-                                        </td>
-                                    </tr>";
-                                }                            
+                                    // Verificar si ya son amigos
+                                    $id_usuario_actual = $_SESSION['id_usuario'];
+                                    $id_usuario_solicitado = $usuario['id_usuario'];
+
+                                    $sql_amigos = "SELECT * FROM tbl_amigos WHERE (id_usuarioa = ? AND id_usuariob = ?) OR (id_usuariob = ? AND id_usuarioa = ?)";
+                                    $stmt_amigos = mysqli_prepare($conexion, $sql_amigos);
+                                    mysqli_stmt_bind_param($stmt_amigos, "iiii", $id_usuario_actual, $id_usuario_solicitado, $id_usuario_actual, $id_usuario_solicitado);
+                                    mysqli_stmt_execute($stmt_amigos);
+                                    $resultado_amigos = mysqli_stmt_get_result($stmt_amigos);
+
+                                    // Solo mostrar el botón si no son amigos
+                                    if (mysqli_num_rows($resultado_amigos) === 0) {
+                                        echo "<tr>
+                                            <td>" . htmlspecialchars($usuario['nombre_usuario']) . "</td>
+                                            <td>
+                                                <form class='tr-solicitud' action='./inserts/insert_solicitud.php?id=" . $usuario['id_usuario'] . "' method='post'>
+                                                    <input type='submit' name='btn_solicitud' value='+' id='btn_agregar'>
+                                                </form>
+                                            </td>
+                                        </tr>";
+                                    } else {
+                                        echo "<tr>
+                                            <td>" . htmlspecialchars($usuario['nombre_usuario']) . " | Ya son amigos |</td>
+                                            <td></td>
+                                        </tr>";
+                                    }
+                                }
                                 echo "</table>";
                             } else {
                                 echo "<br><h6>No se encontraron usuarios con ese nombre.</h6>";
@@ -123,7 +141,6 @@
                                             WHERE sa.id_solicitado = ?";
                         
                         $stmt = mysqli_prepare($conexion, $sql_solicitudes);
-                        echo $_SESSION['id_usuario']; 
                         if ($stmt) {
                             $id_solicitado = $_SESSION['id_usuario']; 
                             
@@ -216,19 +233,21 @@
                 echo "<table>";
                 foreach ($amigos as $amigo) {
                     echo "<tr>
-                    <td stlye='display: flex; justify-content: space-between;'>
-                        <a href='?id_amigo=" . htmlspecialchars($amigo['id_usuario']) . "'>" . htmlspecialchars($amigo['nombre_usuario']) . "</a>
-                        <form method='POST' style='padding: 0px; justify-content: space-around;' action='./inserts/borrar_amigo.php?id_amigo=" . htmlspecialchars($amigo['id_usuario']) . "' method='post'>
-                            <input type='submit' name='btn_eliminar_amigo' value='Eliminar' id='btn_agregar'>
-                        </form>
-                    </td>
+                        <td>
+                            <a href='?id_amigo=" . htmlspecialchars($amigo['id_usuario']) . "'>" . htmlspecialchars($amigo['nombre_usuario']) . "</a>
+                        </td>
+                        <td style='text-align: right;'>
+                            <form method='POST' action='./inserts/borrar_amigo.php?id_amigo=" . htmlspecialchars($amigo['id_usuario']) . "'>
+                                <input type='submit' name='btn_eliminar_amigo' value='Eliminar' class='btn-del'>
+                            </form>
+                        </td>
                     </tr>";
-            
                 }
                 echo "</table>";
             } else {
                 echo "<br><h6>No hay amigos disponibles.</h6>";
             }
+            
         ?>
         <?php } ?>
         </div>

@@ -3,7 +3,7 @@
     $dbserver="localhost";
     $dbusername="root";
     // Cambiar contraseña segun quien se cree la base de datos
-    $dbpassword="qazQAZ123";
+    $dbpassword="1478";
     $dbbasedatos="bd_chat";
     
     try {
