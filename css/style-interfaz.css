@@ -1,7 +1,7 @@
 html {
     box-sizing: border-box;
     background-color: rgb(183, 180, 207);
-    color: #97a2a6;
+    color: #97a2a6 !important;
 }
 
 body {
@@ -32,26 +32,23 @@ body {
     background-color: #101d25;
     width: 30%;
 }
-
 tr {
     z-index: 9998;
-    background-color: #1b252b;
+    background-color: #1b252b !important;
     color: #97a2a6;
-    border: 2px solid #132b38;
+    border: 2px solid #132b38!important;
     cursor: pointer;
     transition: 0.3s;
 }
-
 tr:hover{
     transition: 0.3s;
-    background-color: #132b38;
+    background-color: #132b38 !important;
 }
 
 td{
     padding: 8px;
     padding-left: 20px;
 }
-
 .tr-solicitud{
     display: flex;
     justify-content: space-evenly;
@@ -80,7 +77,7 @@ td{
 
 h2 {
     text-align: center;
-    color: white;
+    color: white !important;
 }
 
 .form-outline {
@@ -99,7 +96,7 @@ h2 {
     width: 100%;
     border-radius: 20px;
     background-color: #101d25;
-    color: #97a2a6;
+    color: #97a2a6 !important;
     border: 2px solid #1a394b;
 }
 
@@ -110,11 +107,13 @@ h2 {
 .header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     background-color: #1f2c34;
     box-shadow: 6px -1px 10px #333;
     z-index: 9999;
-    padding: 6px;
+    padding: 10px;
     width: 100%;
+    padding-top: 30px;
     align-content: center;
 }
 
@@ -126,7 +125,7 @@ h2 {
     height: 100vh;
     box-sizing: border-box;
     z-index: 1;
-    background-image: url(../img/FondoWhatsAppNegro.jpg);
+    background-image: url(../img/2b609488b4711e06e40a213e24e55d77\ \(1\).jpg);
 }
 
 .chat > div {
@@ -144,23 +143,6 @@ h2 {
 }
 
 #vacio > div {
-    width: fit-content;
-    background-color: white;
-    padding: 5px;
-    border-radius: 10px;
-}
-
-#default-chat {
-    display: flex;
-    text-align: center;
-    justify-content: center;
-    width: 100%;
-    padding: 5px;
-    border-radius: 10px;
-    margin-top: 450px;
-}
-
-#default-chat > div {
     width: fit-content;
     background-color: white;
     padding: 5px;
@@ -211,9 +193,9 @@ h2 {
 }
 
 .navbar {
-    padding-left: 10px;
-    padding-right: 10px;
-    background-color: #1f2c34;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    background-color: #1f2c34 !important;
 }
 .navbar-div{
     width: 100%;
@@ -222,8 +204,8 @@ h2 {
 }
 
 a {
-    color: #aecdc7;
-    text-decoration: none;
+    color: #aecdc7 !important;
+    text-decoration: none !important;
     width: 100%;
     padding-left: 20px;
 }
@@ -255,30 +237,30 @@ input[type="text"] {
     border: 2px solid #1a394b;
     border-radius: 20px;
     margin-right: 10px;
-    background-color: #101d25;
-    color: #97a2a6;
+    background-color: #101d25 !important;
+    color: #97a2a6 !important;
 }
 
 input[type="text"]::after {
-    border: 2px solid #326d8f;
+    border: 2px solid #326d8f !important;
 }
 
 button {
     padding: 8px 20px;
-    background-color: #133831;
+    background-color: #133831 !important;
     border: none;
     color: white;
-    border-radius: 20px;
+    border-radius: 20px !important;
     cursor: pointer;
     transition: 1s;
 }
 #btn_agregar {
     padding: 5px 10px;
-    background-color: #133831;
+    background-color: #133831 !important;
     border: none;
     color: white;
     font-size: large;
-    border-radius: 20px;
+    border-radius: 20px !important;
     cursor: pointer;
     transition: 1s;
 }
@@ -286,7 +268,7 @@ button {
 button:hover,
 #btn_agregar:hover {
     transition: 0.3s;
-    background-color: rgb(26, 77, 67);
+    background-color: rgb(26, 77, 67) !important;
 }
 
 input[class="btn-del"] {
@@ -296,7 +278,6 @@ input[class="btn-del"] {
     color: black;
     border-radius: 20px;
     cursor: pointer;
-    margin-left: auto;
 }
 
 input[class="btn-del"]:hover {
@@ -306,7 +287,6 @@ input[class="btn-del"]:hover {
 
 h1 {
     margin: 0;
-    margin-left: 20px;
 }
 
 form {
