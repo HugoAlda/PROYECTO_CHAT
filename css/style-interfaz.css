@@ -1,7 +1,7 @@
 html {
     box-sizing: border-box;
     background-color: rgb(183, 180, 207);
-    color: #97a2a6 !important;
+    color: #97a2a6;
 }
 
 body {
@@ -30,25 +30,28 @@ body {
     box-shadow: 0 0 10px #000000;
     z-index: 9998;
     background-color: #101d25;
-    width: 30%; /* 30% de ancho para la columna izquierda */
+    width: 30%;
 }
+
 tr {
     z-index: 9998;
-    background-color: #1b252b !important;
+    background-color: #1b252b;
     color: #97a2a6;
-    border: 2px solid #132b38!important; /* un borde gris oscuro que complementa el fondo */
+    border: 2px solid #132b38;
     cursor: pointer;
     transition: 0.3s;
 }
+
 tr:hover{
     transition: 0.3s;
-    background-color: #132b38 !important;
+    background-color: #132b38;
 }
 
 td{
     padding: 8px;
     padding-left: 20px;
 }
+
 .tr-solicitud{
     display: flex;
     justify-content: space-evenly;
@@ -77,7 +80,7 @@ td{
 
 h2 {
     text-align: center;
-    color: white !important;
+    color: white;
 }
 
 .form-outline {
@@ -96,7 +99,7 @@ h2 {
     width: 100%;
     border-radius: 20px;
     background-color: #101d25;
-    color: #97a2a6 !important;
+    color: #97a2a6;
     border: 2px solid #1a394b;
 }
 
@@ -105,9 +108,8 @@ h2 {
 }
 
 .header {
-    display: flex; /* Usar flexbox para alinear elementos en una línea */
-    align-items: center; /* Centra verticalmente el contenido */
-    /* justify-content: space-between; Espacio entre el título y el formulario */
+    display: flex;
+    align-items: center;
     background-color: #1f2c34;
     box-shadow: 6px -1px 10px #333;
     z-index: 9999;
@@ -119,16 +121,16 @@ h2 {
 .chat {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Asegura que el chat se extienda y el formulario quede abajo */
-    width: 70%; /* 70% de ancho para la columna derecha */
-    height: 100vh; /* Altura completa */
+    justify-content: space-between;
+    width: 70%;
+    height: 100vh;
     box-sizing: border-box;
     z-index: 1;
-    background-image: url(../img/2b609488b4711e06e40a213e24e55d77\ \(1\).jpg);
+    background-image: url(../img/FondoWhatsAppNegro.jpg);
 }
 
 .chat > div {
-    background-color: transparent; /* Elimina el color de fondo de los elementos internos */
+    background-color: transparent;
     margin-bottom: 10px;
 }
 
@@ -167,51 +169,51 @@ h2 {
 
 .mensajes {
     height: 550px;
-    overflow-y: auto; /* Permitir desplazamiento si hay muchos mensajes */
+    overflow-y: auto;
     padding: 10px;
-    background-color: #aa3434; /* Fondo blanco para los mensajes */
-    border-radius: 10px; /* Bordes redondeados */
+    background-color: #aa3434;
+    border-radius: 10px;
     width: 100%;
 }
 
 .mensaje {
-    padding: 5px; /* Espaciado interno */
-    border-radius: 10px; /* Bordes redondeados */
-    position: relative; /* Posicionamiento relativo para el reloj */
-    display: flex; /* Cambiar a flex para alineación */
-    justify-content: flex-end; /* Alinear el contenido hacia la derecha por defecto */
+    padding: 5px;
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
     width: fit-content;
-    max-width: 50%; /* Limitar el ancho máximo al 50% */
+    max-width: 50%;
     flex-direction: column
 
 }
 
 .mio {
-    background-color: #133831; /* Color de fondo del mensaje del usuario */
-    color: #aecdc7; /* Color del texto del usuario */
-    margin-left: auto; /* Empujar a la derecha */
+    background-color: #133831;
+    color: #aecdc7;
+    margin-left: auto;
     width:max-content;
 }
 
 .amigo {
-    background-color: #f8d7da; /* Color de fondo del mensaje del amigo */
-    color: #000; /* Color del texto del amigo */
-    justify-content: flex-start; /* Alinear a la izquierda */
+    background-color: #f8d7da;
+    color: #000;
+    justify-content: flex-start;
 }
 
 .mensaje-texto {
-    max-width: 100%; /* Limitar el ancho máximo al 50% */
-    width: 100%; /* Ajustar el ancho al contenido */
-    padding: 5px; /* Espaciado interno del texto */
-    display: inline-block; /* Para que el ancho se respete */
+    max-width: 100%;
+    width: 100%;
+    padding: 5px;
+    display: inline-block;
     text-align: left;
-    word-wrap: break-word; /* Permitir que las palabras se dividan si son demasiado largas */
+    word-wrap: break-word;
 }
 
 .navbar {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    background-color: #1f2c34 !important;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #1f2c34;
 }
 .navbar-div{
     width: 100%;
@@ -220,16 +222,16 @@ h2 {
 }
 
 a {
-    color: #aecdc7 !important;
-    text-decoration: none !important;
+    color: #aecdc7;
+    text-decoration: none;
     width: 100%;
     padding-left: 20px;
 }
 
 .mensaje-informacion {
-    font-size: 12px; /* Tamaño de fuente más pequeño */
-    color: #888; /* Color gris para la información */
-    margin-top: 5px; /* Espaciado superior para separar del texto del mensaje */
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -243,7 +245,7 @@ form {
     width: 100%;
     padding: 10px;
     position: sticky;
-    bottom: 0; /* Asegura que el formulario esté siempre abajo */
+    bottom: 0;
     justify-content: flex-start;
 }
 
@@ -253,30 +255,30 @@ input[type="text"] {
     border: 2px solid #1a394b;
     border-radius: 20px;
     margin-right: 10px;
-    background-color: #101d25 !important;
-    color: #97a2a6 !important;
+    background-color: #101d25;
+    color: #97a2a6;
 }
 
 input[type="text"]::after {
-    border: 2px solid #326d8f !important;
+    border: 2px solid #326d8f;
 }
 
 button {
     padding: 8px 20px;
-    background-color: #133831 !important;
+    background-color: #133831;
     border: none;
     color: white;
-    border-radius: 20px !important;
+    border-radius: 20px;
     cursor: pointer;
     transition: 1s;
 }
 #btn_agregar {
     padding: 5px 10px;
-    background-color: #133831 !important;
+    background-color: #133831;
     border: none;
     color: white;
     font-size: large;
-    border-radius: 20px !important;
+    border-radius: 20px;
     cursor: pointer;
     transition: 1s;
 }
@@ -284,7 +286,7 @@ button {
 button:hover,
 #btn_agregar:hover {
     transition: 0.3s;
-    background-color: rgb(26, 77, 67) !important;
+    background-color: rgb(26, 77, 67);
 }
 
 input[class="btn-del"] {
@@ -303,12 +305,12 @@ input[class="btn-del"]:hover {
 }
 
 h1 {
-    margin: 0; /* Elimina el margen predeterminado del título */
+    margin: 0;
     margin-left: 20px;
 }
 
 form {
-    margin: 0; /* Elimina el margen del formulario */
+    margin: 0;
 }
 #form-cerrar{
     justify-content: flex-end;

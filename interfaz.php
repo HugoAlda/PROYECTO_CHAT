@@ -43,7 +43,7 @@
                 <div class="navbar-div">
                     <form action="" method="post">
                         <button type="submit" name="btn_amigos" class="navbar-brand btn-link">Amigos</button>
-                        <input type="submit" name="btn_agregar" value="+" id="btn_agregar">
+                        <input type="submit" name="btn_agregar" value="Añadir Amigos" id="btn_agregar">
                     </form>
                     <form action="./destruir.php" id="form-cerrar">
                         <button type="submit" class="navbar-brand btn-link">Cerrar Session</button>
@@ -151,20 +151,17 @@
             <?php
             $amigos = []; // Inicializa el array para almacenar amigos
 
-            // Manejo de la búsqueda de amigos
-            // Código de búsqueda de amigos
+            // Busqueda de amigos
             if (isset($_POST['amigos-busqueda'])) {
                 try {
                     $amigoform = mysqli_real_escape_string($conexion, $_POST['amigos']);
-                    $id_usuario_actual = $_SESSION['id_usuario']; // Suponiendo que guardas el ID del usuario actual en la sesión
-                    $sql_busqueda_amigos = "
-                        SELECT u.id_usuario, u.nombre_usuario, u.nombre_persona 
-                        FROM tbl_amigos a 
-                        INNER JOIN tbl_usuarios u ON 
-                            (a.id_usuarioa = u.id_usuario AND a.id_usuariob = $id_usuario_actual) 
-                            OR (a.id_usuariob = u.id_usuario AND a.id_usuarioa = $id_usuario_actual)
-                        WHERE u.nombre_usuario LIKE '%$amigoform%'
-                    ";
+                    $id_usuario_actual = $_SESSION['id_usuario'];
+                    $sql_busqueda_amigos = "SELECT u.id_usuario, u.nombre_usuario, u.nombre_persona 
+                                            FROM tbl_amigos a 
+                                            INNER JOIN tbl_usuarios u ON 
+                                                (a.id_usuarioa = u.id_usuario AND a.id_usuariob = $id_usuario_actual) 
+                                                OR (a.id_usuariob = u.id_usuario AND a.id_usuarioa = $id_usuario_actual)
+                                            WHERE u.nombre_usuario LIKE '%$amigoform%'";
                 
                     $resultado = mysqli_query($conexion, $sql_busqueda_amigos);
                 
@@ -179,15 +176,12 @@
             } else {
                 try {
                     $id_usuario = $_SESSION['id_usuario'];
-                    $sql_lista_amigos = "
-                        SELECT u.id_usuario, u.nombre_usuario
-                        FROM tbl_amigos a
-                        INNER JOIN tbl_usuarios u ON (
-                            (a.id_usuarioa = $id_usuario AND a.id_usuariob = u.id_usuario)
-                            OR (a.id_usuariob = $id_usuario AND a.id_usuarioa = u.id_usuario)
-                        )
-                        WHERE u.id_usuario != $id_usuario
-                    ";
+                    $sql_lista_amigos = "SELECT u.id_usuario, u.nombre_usuario
+                                         FROM tbl_amigos a 
+                                         INNER JOIN tbl_usuarios u 
+                                         ON ((a.id_usuarioa = $id_usuario AND a.id_usuariob = u.id_usuario) 
+                                         OR (a.id_usuariob = $id_usuario AND a.id_usuarioa = u.id_usuario)) 
+                                         WHERE u.id_usuario != $id_usuario";
                     
                     $consulta_lista_amigos = mysqli_query($conexion, $sql_lista_amigos);
                     $amigos = mysqli_fetch_all($consulta_lista_amigos, MYSQLI_ASSOC);
@@ -201,7 +195,6 @@
             if (count($amigos) > 0) {
                 echo "<table>";
                 foreach ($amigos as $amigo) {
-                    // Añadir un enlace o un botón para seleccionar el amigo
                     echo "<tr><td><a href='?id_amigo=" . htmlspecialchars($amigo['id_usuario']) . "'>" . htmlspecialchars($amigo['nombre_usuario']) . "</a></td></tr>";   
                 }
                 echo "</table>";
@@ -216,17 +209,20 @@
             <?php if (isset($_GET['id_amigo']) && !empty($_GET['id_amigo'])) { 
                 // Obtener el nombre del amigo seleccionado
                 $id_amigo = $_GET['id_amigo'];
-                $sql_nombre_amigo = "SELECT nombre_usuario FROM tbl_usuarios WHERE id_usuario = ?";
+                $sql_nombre_amigo = "SELECT nombre_usuario 
+                                     FROM tbl_usuarios 
+                                     WHERE id_usuario = ?";
                 $stmt_nombre_amigo = mysqli_prepare($conexion, $sql_nombre_amigo);
                 mysqli_stmt_bind_param($stmt_nombre_amigo, "i", $id_amigo);
                 mysqli_stmt_execute($stmt_nombre_amigo);
+                
                 $resultado_nombre_amigo = mysqli_stmt_get_result($stmt_nombre_amigo);
                 $amigo = mysqli_fetch_assoc($resultado_nombre_amigo);
                 $nombre_amigo = htmlspecialchars($amigo['nombre_usuario']);
             ?>
             <div>
                 <div class="header">
-                    <h1><?php echo $nombre_amigo; ?></h1> <!-- Nombre del amigo -->
+                    <h1><?php echo $nombre_amigo; ?></h1>
                     <form action="./inserts/insert_vaciar_conversacion.php" method="POST">
                         <input type="hidden" name="id_amigo" value="<?php echo $id_amigo; ?>">                    
                         <input type="submit" class="btn-del" name="btn_vaciar_conversacion" value="Vaciar Conversación">
@@ -245,7 +241,7 @@
                                      INNER JOIN tbl_conversaciones c ON c.id_conversacion = m.id_conversacion
                                      INNER JOIN tbl_usuarios u ON m.id_usuario = u.id_usuario
                                      WHERE (c.id_usuarioa = ? AND c.id_usuariob = ?)
-                                        OR (c.id_usuarioa = ? AND c.id_usuariob = ?)
+                                     OR (c.id_usuarioa = ? AND c.id_usuariob = ?)
                                      ORDER BY m.fecha_envio";
     
                         // Preparar la consulta
@@ -254,7 +250,6 @@
                             // Obtener los IDs del usuario actual y del amigo
                             $id_usuario = $_SESSION['id_usuario'];
                         
-                            // Vincular parámetros
                             mysqli_stmt_bind_param($stmt_chat, "iiii", $id_usuario, $id_amigo, $id_amigo, $id_usuario);
                             mysqli_stmt_execute($stmt_chat);
                             $result_chat = mysqli_stmt_get_result($stmt_chat);

@@ -37,7 +37,7 @@ if (isset($_POST['btn_crear_cuenta'])) {
     try {
         mysqli_autocommit($conexion, false);
         mysqli_begin_transaction($conexion, MYSQLI_TRANS_START_READ_WRITE);
-        
+         
         $sql = "INSERT INTO tbl_usuarios (nombre_usuario, nombre_persona, correo_usuario, passwd_usuario) VALUES (?, ?, ?, ?)";
         $stmt = mysqli_stmt_init($conexion);
         

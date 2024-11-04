@@ -1,11 +1,11 @@
 <?php
 
-session_start();
+    session_start();
 
-// Destruir todas las variables de sesión
-session_unset();
+    // Destruir todas las variables de sesión
+    session_unset();
 
-//Destruir la sesión para resetear el pedido
-session_destroy();
+    //Destruir la sesión
+    session_destroy();
 
-header('Location: index.php');
+    header('Location: index.php');

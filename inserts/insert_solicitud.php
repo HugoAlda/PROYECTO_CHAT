@@ -14,10 +14,9 @@
             if ($stmt) {
                 mysqli_stmt_bind_param($stmt, "ii", $id_usuarioa, $id_usuariob);
                 mysqli_stmt_execute($stmt);
-                // Cierra el statement
                 mysqli_stmt_close($stmt);
                 mysqli_commit($conexion);
-                // Redirige al usuario a interfaz.php después de enviar la solicitud de amistad
+                
                 header("Location: ../interfaz.php");
                 exit;
             }
@@ -118,12 +117,10 @@
             $stmt = mysqli_prepare($conexion, $sql);
     
             if ($stmt) {
-                // Bind de parámetros
                 mysqli_stmt_bind_param($stmt, "iiii", $id_usuarioa_ok, $id_usuariob_ok, $id_usuariob_ok, $id_usuarioa_ok);
     
-                // Ejecutar la consulta
                 if (mysqli_stmt_execute($stmt)) {
-                    if (mysqli_stmt_affected_rows($stmt) > 0) {
+                    if (!mysqli_stmt_affected_rows($stmt) > 0) {
                         // echo "Solicitud de amistad eliminada correctamente.";
                     } else {
                         echo "No se encontró la solicitud para eliminar.";
